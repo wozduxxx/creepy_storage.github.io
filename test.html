@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creepy Storage - Платформа страшных историй</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Creepster&family=Nosifer&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Unified dark red horror theme */
+            --background: hsl(0, 30%, 6%);
+            --foreground: hsl(0, 20%, 95%);
+            --card: hsl(0, 25%, 8%);
+            --card-foreground: hsl(0, 15%, 95%);
+            --primary: hsl(0, 80%, 45%);
+            --primary-foreground: hsl(0, 15%, 95%);
+            --secondary: hsl(0, 20%, 12%);
+            --secondary-foreground: hsl(0, 15%, 85%);
+            --muted: hsl(0, 15%, 10%);
+            --muted-foreground: hsl(0, 10%, 60%);
+            --accent: hsl(0, 70%, 40%);
+            --border: hsl(0, 15%, 15%);
+            --blood-red: hsl(0, 85%, 35%);
+            --blood-red-dark: hsl(0, 70%, 20%);
+            --shadow-red: hsl(0, 40%, 15%);
+            --fog-red: hsl(0, 30%, 20%);
+            --ghost-white: hsl(0, 20%, 98%);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            line-height: 1.6;
+        }
+
+        .font-creepy {
+            font-family: 'Creepster', cursive;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: var(--primary-foreground);
+            box-shadow: 0 10px 50px hsla(0, 80%, 45%, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: hsl(0, 80%, 40%);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: var(--secondary-foreground);
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary:hover {
+            background-color: hsl(0, 20%, 15%);
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+        }
+
+        .card {
+            background-color: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px hsla(0, 50%, 5%, 0.9);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, var(--blood-red-dark), var(--blood-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"><rect fill="%23200505" width="1920" height="1080"/><circle fill="%23330808" cx="400" cy="300" r="150"/><circle fill="%23260606" cx="1500" cy="800" r="200"/></svg>');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent, hsla(0, 30%, 20%, 0.4));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 4rem;
+            max-width: 64rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero p {
+            font-size: clamp(1.125rem, 3vw, 1.5rem);
+            color: var(--muted-foreground);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+
+        @media (min-width: 768px) {
+            .hero-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--ghost-white);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 1.25rem;
+            color: var(--muted-foreground);
+            margin-bottom: 4rem;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        @media (max-width: 768px) {
+            .grid-cols-2, .grid-cols-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1024px) {
+            .grid-cols-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Story Cards */
+        .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-badge {
+            background-color: hsla(0, 80%, 45%, 0.2);
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        .story-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            transition: color 0.3s ease;
+        }
+
+        .card:hover .story-title {
+            color: var(--primary);
+        }
+
+        .story-excerpt {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .story-stats {
+            display: flex;
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .stat:hover {
+            color: var(--primary);
+        }
+
+        /* Audio Player */
+        .audio-player {
+            background-color: hsla(0, 20%, 12%, 0.5);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            backdrop-filter: blur(8px);
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+        }
+
+        .play-btn {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            background-color: var(--secondary);
+            border: none;
+            color: var(--foreground);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: var(--muted);
+            border-radius: 9999px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--primary);
+            border-radius: 9999px;
+            transition: width 0.3s ease;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--muted-foreground);
+        }
+
+        /* Results Section */
+        .result-icon {
+            width: 4rem;
+            height: 4rem;
+            background-color: hsla(0, 80%, 45%, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .card:hover .result-icon {
+            background-color: hsla(0, 80%, 45%, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--ghost-white);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: var(--muted-foreground);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .social-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: var(--secondary);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--foreground);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .newsletter {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-size: 0.875rem;
+        }
+
+        .newsletter input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .footer-bottom p {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+        }
+
+        .footer-links-bottom {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .footer-links-bottom a {
+            font-size: 0.875rem;
+            color: var(--muted-foreground);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links-bottom a:hover {
+            color: var(--primary);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Utilities */
+        .text-center {
+            text-align: center;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem;
+        }
+
+        .mb-12 {
+            margin-bottom: 3rem;
+        }
+
+        .mt-8 {
+            margin-top: 2rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .gap-2 {
+            gap: 0.5rem;
+        }
+
+        .gap-4 {
+            gap: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>
+                    Welcome to 
+                    <span class="gradient-text font-creepy">Creepy Storage</span>
+                </h1>
+                <p>
+                    Погружайтесь в мир ужасов через чтение и прослушивание 
+                    самых атмосферных страшных историй
+                </p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn btn-primary btn-lg">
+                        <i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>
+                        Читать истории
+                    </a>
+                    <a href="#" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-volume-up" style="margin-right: 0.5rem;"></i>
+                        Слушать с озвучкой
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Stories Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Читают все</h2>
+            <p class="section-subtitle">Самые популярные текстовые истории нашего сообщества</p>
+            
+            <div class="grid grid-cols-3 mb-12">
+                <div class="card fade-in">
+                    <div class="story-meta">
+                        <span class="category-badge">Мистика</span>
+                        <div class="read-time">
+                            <i class="fas fa-clock"></i>
+                            <span>5 мин</span>
+                        </div>
+                    </div>
+                    <h3 class="story-title">Последний звонок</h3>
+                    <p class="story-excerpt">В старом доме зазвонил телефон, который был отключен уже 10 лет...</p>
+                    <div class="story-stats">
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            <span>1247</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-comment"></i>
+                            <span>89</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-eye"></i>
+                            <span>15432</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card fade-in">
+                    <div class="story-meta">
+                        <span class="category-badge">Паранормальное</span>
+                        <div class="read-time">
+                            <i class="fas fa-clock"></i>
+                            <span>8 мин</span>
+                        </div>
+                    </div>
+                    <h3 class="story-title">Зеркало в подвале</h3>
+                    <p class="story-excerpt">Когда Анна спустилась в подвал, она увидела в зеркале то, чего там быть не должно...</p>
+                    <div class="story-stats">
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            <span>2156</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-comment"></i>
+                            <span>156</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-eye"></i>
+                            <span>23891</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card fade-in">
+                    <div class="story-meta">
+                        <span class="category-badge">Хоррор</span>
+                        <div class="read-time">
+                            <i class="fas fa-clock"></i>
+                            <span>12 мин</span>
+                        </div>
+                    </div>
+                    <h3 class="story-title">Детский смех в лесу</h3>
+                    <p class="story-excerpt">Поход выходного дня превратился в кошмар, когда они услышали детский смех...</p>
+                    <div class="story-stats">
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            <span>1834</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-comment"></i>
+                            <span>203</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-eye"></i>
+                            <span>19567</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="#" class="btn btn-secondary btn-lg">Смотреть все текстовые истории</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Stories Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">
+                Слушай, если <span class="gradient-text">осмелишься</span>
+            </h2>
+            <p class="section-subtitle">Профессиональная озвучка с модерацией и обработкой</p>
+            <p class="text-center mb-12" style="color: var(--accent);">🎧 Используйте наушники для максимального погружения</p>
+            
+            <div class="grid grid-cols-2 mb-12">
+                <div class="card fade-in">
+                    <div class="story-meta">
+                        <span class="category-badge">Хоррор</span>
+                        <div class="flex items-center gap-2" style="font-size: 0.75rem; color: #10b981;">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Модерировано</span>
+                        </div>
+                    </div>
+                    <h3 class="story-title">Голоса из темноты</h3>
+                    <div class="flex items-center mb-4" style="font-size: 0.875rem; color: var(--muted-foreground);">
+                        <i class="fas fa-volume-up" style="margin-right: 0.5rem;"></i>
+                        <span>Читает: Александр Волков</span>
+                    </div>
+                    <p class="story-excerpt">Профессиональная озвучка с эффектами и атмосферными звуками</p>
+                    
+                    <div class="audio-player">
+                        <div class="player-controls">
+                            <button class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div style="font-family: monospace; font-size: 0.875rem; color: var(--muted-foreground);">
+                                15:42
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="time-display">
+                            <span>0:00</span>
+                            <span>15:42</span>
+                        </div>
+                    </div>
+                    
+                    <div class="story-stats">
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            <span>2847</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-comment"></i>
+                            <span>156</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card fade-in">
+                    <div class="story-meta">
+                        <span class="category-badge">Мистика</span>
+                        <div class="flex items-center gap-2" style="font-size: 0.75rem; color: #10b981;">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Модерировано</span>
+                        </div>
+                    </div>
+                    <h3 class="story-title">Шёпот за стеной</h3>
+                    <div class="flex items-center mb-4" style="font-size: 0.875rem; color: var(--muted-foreground);">
+                        <i class="fas fa-volume-up" style="margin-right: 0.5rem;"></i>
+                        <span>Читает: Мария Смирнова</span>
+                    </div>
+                    <p class="story-excerpt">Пространственный звук с эффектом присутствия</p>
+                    
+                    <div class="audio-player">
+                        <div class="player-controls">
+                            <button class="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <div style="font-family: monospace; font-size: 0.875rem; color: var(--muted-foreground);">
+                                22:15
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="time-display">
+                            <span>0:00</span>
+                            <span>22:15</span>
+                        </div>
+                    </div>
+                    
+                    <div class="story-stats">
+                        <div class="stat">
+                            <i class="fas fa-heart"></i>
+                            <span>3924</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-comment"></i>
+                            <span>298</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <a href="#" class="btn btn-primary btn-lg">Все истории с озвучкой</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">
+                Представь, как меняется<br>
+                <span class="gradient-text">твой вечер</span>
+            </h2>
+            
+            <div class="grid grid-cols-3 mt-12 mb-12">
+                <div class="card fade-in text-center">
+                    <div class="result-icon">
+                        <i class="fas fa-moon" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Атмосферный вечер</h3>
+                    <p class="story-excerpt">Погружение в мир ужасов с качественным контентом и профессиональной озвучкой</p>
+                </div>
+
+                <div class="card fade-in text-center">
+                    <div class="result-icon">
+                        <i class="fas fa-headphones" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Полное погружение</h3>
+                    <p class="story-excerpt">3D-звук и эффекты создают эффект присутствия в самом центре событий</p>
+                </div>
+
+                <div class="card fade-in text-center">
+                    <div class="result-icon">
+                        <i class="fas fa-book-open" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Личная коллекция</h3>
+                    <p class="story-excerpt">Создавайте свой уникальный архив любимых историй для повторного чтения</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <div class="card" style="display: inline-block; padding: 1.5rem 3rem;">
+                    <p style="font-size: 1.125rem; color: var(--muted-foreground);">
+                        Создайте свой 
+                        <span style="color: var(--primary); font-weight: 600;">личный крипи-архив</span>
+                        из самых захватывающих историй
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Платформа нового поколения</h2>
+            <p class="section-subtitle" style="max-width: 48rem; margin: 0 auto 5rem;">
+                Creepy Storage объединяет лучших авторов страшных историй с профессиональными 
+                дикторами для создания уникального контента, который заставит вас забыть о реальности
+            </p>
+
+            <div class="grid grid-cols-3 mb-12">
+                <div class="card fade-in text-center" style="position: relative;">
+                    <div style="position: absolute; top: 1rem; right: 1rem; font-size: 4rem; font-weight: 700; color: hsla(0, 80%, 45%, 0.1);">01</div>
+                    <div class="result-icon">
+                        <i class="fas fa-user-plus" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Регистрация</h3>
+                    <p class="story-excerpt">Создайте аккаунт и получите доступ к эксклюзивному контенту</p>
+                </div>
+
+                <div class="card fade-in text-center" style="position: relative;">
+                    <div style="position: absolute; top: 1rem; right: 1rem; font-size: 4rem; font-weight: 700; color: hsla(0, 80%, 45%, 0.1);">02</div>
+                    <div class="result-icon">
+                        <i class="fas fa-file-text" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Выбор контента</h3>
+                    <p class="story-excerpt">Читайте тексты или слушайте профессиональную озвучку</p>
+                </div>
+
+                <div class="card fade-in text-center" style="position: relative;">
+                    <div style="position: absolute; top: 1rem; right: 1rem; font-size: 4rem; font-weight: 700; color: hsla(0, 80%, 45%, 0.1);">03</div>
+                    <div class="result-icon">
+                        <i class="fas fa-volume-up" style="font-size: 2rem; color: var(--primary);"></i>
+                    </div>
+                    <h3 class="story-title">Погружение</h3>
+                    <p class="story-excerpt">Наслаждайтесь атмосферой с нашими уникальными эффектами</p>
+                </div>
+            </div>
+
+            <!-- Founder Message -->
+            <div class="card mb-12" style="background: linear-gradient(to right, var(--card), var(--secondary)); padding: 3rem; text-align: center;">
+                <div class="flex justify-center mb-6">
+                    <div class="flex gap-2">
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                        <i class="fas fa-star" style="color: #fbbf24;"></i>
+                    </div>
+                </div>
+                
+                <blockquote style="font-size: 1.5rem; color: var(--ghost-white); margin-bottom: 1.5rem; font-style: italic;">
+                    "Мы создали место, где страх становится искусством, а каждая история — 
+                    это путешествие в глубины человеческого воображения"
+                </blockquote>
+                
+                <div class="flex items-center justify-center gap-4">
+                    <div style="width: 3rem; height: 3rem; background-color: hsla(0, 80%, 45%, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <span style="color: var(--primary); font-weight: 700; font-size: 1.125rem;">A</span>
+                    </div>
+                    <div style="text-align: left;">
+                        <p style="color: var(--ghost-white); font-weight: 600;">Некий Человек</p>
+                        <p style="color: var(--muted-foreground); font-size: 0.875rem;">Разработчик Creepy Storage</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <a href="#" class="btn btn-primary btn-lg" style="font-size: 1.25rem; padding: 1.5rem 3rem;">
+                    Начать прямо сейчас
+                </a>
+                <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-top: 1rem;">
+                    Присоединяйтесь к 50,000+ любителей мистики
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-section">
+                    <h3 style="font-size: 1.5rem;" class="gradient-text font-creepy mb-4">Creepy Storage</h3>
+                    <p style="color: var(--muted-foreground); margin-bottom: 1rem;">
+                        Погружайтесь в мир ужасов через лучшие страшные истории с профессиональной озвучкой
+                    </p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="social-icon">
+                            <i class="fab fa-github"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Навигация</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-book-open" style="margin-right: 0.5rem;"></i>Текстовые истории</a></li>
+                        <li><a href="#"><i class="fas fa-volume-up" style="margin-right: 0.5rem;"></i>Аудио истории</a></li>
+                        <li><a href="#">Категории</a></li>
+                        <li><a href="#">Авторы</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Поддержка</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Правила сообщества</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Контакты</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Подписка</h4>
+                    <p style="color: var(--muted-foreground); font-size: 0.875rem; margin-bottom: 1rem;">
+                        Получайте уведомления о новых страшных историях
+                    </p>
+                    <div class="newsletter">
+                        <input type="email" placeholder="Ваш email">
+                        <button class="btn btn-primary" style="padding: 0.75rem;">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                    <p style="color: var(--muted-foreground); font-size: 0.75rem; margin-top: 0.5rem;">
+                        Отписаться можно в любое время
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2024 Creepy Storage. Все права защищены.</p>
+                <div class="footer-links-bottom">
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple interactions
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                const progressFill = this.closest('.card').querySelector('.progress-fill');
+                
+                if (icon.classList.contains('fa-play')) {
+                    icon.classList.remove('fa-play');
+                    icon.classList.add('fa-pause');
+                    progressFill.style.width = '35%';
+                } else {
+                    icon.classList.remove('fa-pause');
+                    icon.classList.add('fa-play');
+                    progressFill.style.width = '0%';
+                }
+            });
+        });
+
+        // Animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease-out, transform 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
